@@ -12,8 +12,6 @@
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}/vscode-extension",
-				"/home/hungtcs/Workspaces/@github/n8n",
-				"/home/hungtcs/Workspaces/@github/signoz"
 			],
 			"outFiles": [
 				"${workspaceFolder}/vscode-extension/dist/**/*.js"
