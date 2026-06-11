@@ -1,33 +1,56 @@
 {
-  "name": "@cicara/vscode-git-commit-message-generator",
-  "displayName": "Git Commit Message Generator",
-  "version": "0.0.0",
-  "description": "generate git commit message",
+  "name": "cicara-vscode-git-commit-message-generator",
+  "version": "0.0.2",
+  "description": "AI-powered Git commit message generator using DeepSeek — analyze staged changes and generate meaningful commit messages with one click",
+  "icon": "icon.png",
+  "keywords": [
+    "git",
+    "commit",
+    "commit-message",
+    "ai",
+    "deepseek",
+    "generator",
+    "scm"
+  ],
+  "homepage": "https://github.com/hungtcs/git-commit-message-generator#readme",
+  "bugs": {
+    "url": "https://github.com/hungtcs/git-commit-message-generator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hungtcs/git-commit-message-generator.git"
+  },
+  "license": "MIT",
+  "author": "hungtcs <hungtcs@outlook.com> (https://github.com/hungtcs)",
   "type": "module",
-  "main": "./dist/extension.js",
+  "main": "./dist/extension.cjs",
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "build": "tsdown",
+    "watch": "tsc -watch -p ./",
+    "test": "vscode-test",
+    "pack": "vsce package --no-dependencies"
   },
-  "keywords": [],
-  "author": "hungtcs <hungtcs@outlook.com> (https://github.com/hungtcs)",
-  "license": "MIT",
   "dependencies": {
-    "@cicara/git-commit-message-generator": "workspace:^",
+    "@cicara/git-commit-message-generator": "^0.0.0",
     "@genkit-ai/compat-oai": "^1.36.0",
     "genkit": "^1.36.0"
   },
   "devDependencies": {
     "@types/node": "^22.19.20",
     "@types/vscode": "^1.120.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^3.0.0",
     "typescript": "^6.0.3"
   },
   "engines": {
-    "vscode": "^1.100.0"
+    "vscode": "^1.120.0"
   },
+  "displayName": "Cicara Git Commit Message Generator",
+  "publisher": "hungtcs",
   "categories": [
-    "Other"
+    "AI",
+    "SCM Providers"
   ],
   "extensionDependencies": [
     "vscode.git"
@@ -36,7 +59,7 @@
     "configuration": {
       "title": "Git Commit Message Generator",
       "properties": {
-        "gitCommitMessageGenerator.provider": {
+        "git-commit-message-generator.provider": {
           "type": "string",
           "default": "deepseek",
           "enum": [
@@ -47,17 +70,12 @@
           ],
           "description": "AI 服务提供商"
         },
-        "gitCommitMessageGenerator.deepseekApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "DeepSeek API Key"
-        },
-        "gitCommitMessageGenerator.customInstructions": {
+        "git-commit-message-generator.customInstructions": {
           "type": "string",
           "default": "",
           "markdownDescription": "生成提交信息时使用的自定义用户 prompt。配置后会替换默认用户 prompt。"
         },
-        "gitCommitMessageGenerator.customInstructionsFile": {
+        "git-commit-message-generator.customInstructionsFile": {
           "type": "string",
           "default": "",
           "markdownDescription": "生成提交信息时读取的自定义用户 prompt 文件路径。支持绝对路径，或相对于当前 Git 仓库根目录的路径。"
@@ -66,22 +84,27 @@
     },
     "outputChannels": [
       {
-        "id": "gitCommitMessageGenerator",
+        "id": "git-commit-message-generator",
         "label": "Git Commit Message Generator",
         "languageId": "log"
       }
     ],
     "commands": [
       {
-        "command": "gitCommitMessageGenerator.generate",
+        "command": "git-commit-message-generator.generate",
         "title": "生成提交信息",
         "icon": "$(sparkle)"
+      },
+      {
+        "command": "git-commit-message-generator.setApiKey",
+        "title": "设置 DeepSeek API Key",
+        "icon": "$(key)"
       }
     ],
     "menus": {
       "scm/title": [
         {
-          "command": "gitCommitMessageGenerator.generate",
+          "command": "git-commit-message-generator.generate",
           "group": "navigation",
           "when": "scmProvider == git"
         }

@@ -1,6 +1,0 @@
-packages:
-  - .
-  - vscode-extension
-allowBuilds:
-  "@firebase/util": true
-  protobufjs: true

@@ -1,0 +1,29 @@
+{
+  "name": "@cicara/git-commit-message-generator",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "node --import tsx --test",
+    "build": "tsdown"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "author": "hungtcs",
+  "license": "MIT",
+  "dependencies": {
+    "@genkit-ai/compat-oai": "^1.36.0",
+    "genkit": "^1.36.0",
+    "simple-git": "^3.36.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.20",
+    "tsdown": "^0.22.2",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}

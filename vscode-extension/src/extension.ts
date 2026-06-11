@@ -69,22 +69,44 @@ export function activate(context: vscode.ExtensionContext) {
   // 监听配置变化，自动作废旧实例
   context.subscriptions.push(watchConfigChanges());
 
+  // 注册设置 API Key 命令
+  const setApiKeyDisposable = vscode.commands.registerCommand("git-commit-message-generator.setApiKey", async () => {
+    const key = await vscode.window.showInputBox({
+      prompt: "请输入 DeepSeek API Key",
+      password: true,
+      ignoreFocusOut: true,
+      placeHolder: "sk-...",
+    });
+
+    if (key) {
+      await context.secrets.store("deepseekApiKey", key);
+      vscode.window.showInformationMessage("DeepSeek API Key 已安全保存");
+      log(channel, "API Key 已更新");
+    }
+  });
+  context.subscriptions.push(setApiKeyDisposable);
+
   const generateDisposable = vscode.commands.registerCommand(
-    "gitCommitMessageGenerator.generate",
+    "git-commit-message-generator.generate",
     async (sourceControl) => {
       const startedAt = Date.now();
-      const config = vscode.workspace.getConfiguration("gitCommitMessageGenerator");
+      const config = vscode.workspace.getConfiguration("git-commit-message-generator");
       const provider = config.get<string>("provider", "deepseek");
-      const deepseekApiKey = config.get<string>("deepseekApiKey", "");
 
       channel.show(true);
       log(channel, "收到生成提交信息命令");
-      log(channel, `配置读取完成，provider=${provider}，hasDeepSeekApiKey=${deepseekApiKey.length > 0}`);
       log(channel, `命令参数 SourceControl.rootUri=${getSourceControlRootUri(sourceControl)?.fsPath ?? "(none)"}`);
+
+      log(channel, "从 SecretStorage 读取 API Key");
+      const deepseekApiKey = await context.secrets.get("deepseekApiKey");
+      log(channel, `配置读取完成，provider=${provider}，hasDeepSeekApiKey=${!!deepseekApiKey}`);
 
       if (!deepseekApiKey) {
         log(channel, "终止：未配置 DeepSeek API Key");
-        vscode.window.showWarningMessage("请先配置 DeepSeek API Key");
+        const setKey = await vscode.window.showWarningMessage("请先设置 DeepSeek API Key", "设置 API Key");
+        if (setKey) {
+          vscode.commands.executeCommand("git-commit-message-generator.setApiKey");
+        }
         return;
       }
 
@@ -112,12 +134,7 @@ export function activate(context: vscode.ExtensionContext) {
       log(channel, `自定义用户 prompt 加载完成，长度=${customPrompt.length}`);
 
       log(channel, "开始创建或复用提交信息生成器");
-      const generator = getGenerator(repoRoot);
-      if (!generator) {
-        log(channel, "终止：无法创建提交信息生成器");
-        vscode.window.showErrorMessage("无法创建提交信息生成器");
-        return;
-      }
+      const generator = getGenerator(deepseekApiKey, repoRoot);
       log(channel, "提交信息生成器准备完成");
 
       try {

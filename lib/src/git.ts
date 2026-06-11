@@ -56,9 +56,7 @@ export class Git {
         const startedAt = Date.now();
         this.log("git-staged-files-stat 开始执行");
         const stat = await this.git.diff(["--staged", "--stat"]);
-        this.log(
-          `git-staged-files-stat 执行完成，耗时 ${Date.now() - startedAt}ms，长度=${stat.length}`,
-        );
+        this.log(`git-staged-files-stat 执行完成，耗时 ${Date.now() - startedAt}ms，长度=${stat.length}`);
         return {
           stat: stat,
         };
@@ -81,13 +79,16 @@ export class Git {
       async (input) => {
         const startedAt = Date.now();
         this.log(`git-staged-files-diff 开始执行，files=${input.files.join(", ") || "(empty)"}`);
-        const diff = await this.git.diff(["--staged", ...input.files]);
-        this.log(
-          `git-staged-files-diff 执行完成，耗时 ${Date.now() - startedAt}ms，长度=${diff.length}`,
-        );
-        return {
-          diff: diff,
-        };
+        try {
+          const diff = await this.git.diff(["--staged", "--", ...input.files]);
+          this.log(`git-staged-files-diff 执行完成，耗时 ${Date.now() - startedAt}ms，长度=${diff.length}`);
+          return { diff };
+        } catch (error) {
+          this.log(
+            `git-staged-files-diff 执行失败，耗时 ${Date.now() - startedAt}ms，error=${error instanceof Error ? error.message : String(error)}`,
+          );
+          return { diff: "" };
+        }
       },
     );
   }

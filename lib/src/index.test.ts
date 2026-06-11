@@ -1,7 +1,7 @@
 import { deepSeek } from "@genkit-ai/compat-oai/deepseek";
 import { loadEnvFile } from "node:process";
 import test from "node:test";
-import { GitCommitMessageGenerator } from "./index.ts";
+import { GitCommitMessageGenerator } from "./index.js";
 
 loadEnvFile();
 

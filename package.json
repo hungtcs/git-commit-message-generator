@@ -1,18 +1,7 @@
 {
-  "name": "@cicara/git-commit-message-generator",
+  "name": "git-commit-message-generator",
   "type": "module",
   "version": "0.0.0",
-  "description": "generate git commit message",
-  "scripts": {
-    "build": "tsc"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "keywords": [],
   "author": {
     "email": "hungtcs@outlook.com",
     "name": "hungtcs",
@@ -20,19 +9,19 @@
   },
   "license": "MIT",
   "devEngines": {
+    "runtime": {
+      "name": "node",
+      "onFail": "error"
+    },
     "packageManager": {
-      "name": "pnpm",
-      "version": "^11.5.3",
+      "name": "npm",
+      "version": "^11.13.0",
       "onFail": "download"
     }
   },
-  "dependencies": {
-    "@genkit-ai/compat-oai": "^1.36.0",
-    "genkit": "^1.36.0",
-    "simple-git": "^3.36.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.19.20",
-    "typescript": "^6.0.3"
-  }
+  "workspaces": [
+    "./cli",
+    "./lib",
+    "./vscode-extension"
+  ]
 }

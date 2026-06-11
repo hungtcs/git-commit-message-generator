@@ -2,5 +2,9 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
-  }
+  },
+  "[markdown]": {
+    "editor.wordWrap": "off",
+  },
+  "git-commit-message-generator.customInstructionsFile": ".vscode/commit-message-instructions.md"
 }

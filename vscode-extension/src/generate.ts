@@ -20,11 +20,7 @@ function createGenerator(apiKey: string, baseDir: string): GitCommitMessageGener
   });
 }
 
-export function getGenerator(baseDir: string): GitCommitMessageGenerator | null {
-  const config = vscode.workspace.getConfiguration("gitCommitMessageGenerator");
-  const apiKey = config.get<string>("deepseekApiKey", "");
-  if (!apiKey) return null;
-
+export function getGenerator(apiKey: string, baseDir: string): GitCommitMessageGenerator {
   if (!generator || currentBaseDir !== baseDir) {
     generator = createGenerator(apiKey, baseDir);
     currentBaseDir = baseDir;
@@ -33,7 +29,7 @@ export function getGenerator(baseDir: string): GitCommitMessageGenerator | null 
 }
 
 export async function getCustomPrompt(baseDir: string): Promise<string> {
-  const config = vscode.workspace.getConfiguration("gitCommitMessageGenerator");
+  const config = vscode.workspace.getConfiguration("git-commit-message-generator");
   const customInstructions = config.get<string>("customInstructions", "").trim();
   const customInstructionsFile = config.get<string>("customInstructionsFile", "").trim();
   const prompts: string[] = [];
@@ -67,16 +63,13 @@ export function invalidateGenerator(): void {
 }
 
 /**
- * 监听配置变化，当 provider 或 apiKey 变化时重建 generator。
+ * 监听配置变化，当 provider 变化时重建 generator。
  * 返回 disposable 需要 push 到 context.subscriptions。
  */
 export function watchConfigChanges(): vscode.Disposable {
   return vscode.workspace.onDidChangeConfiguration((e) => {
-    if (
-      e.affectsConfiguration("gitCommitMessageGenerator.provider") ||
-      e.affectsConfiguration("gitCommitMessageGenerator.deepseekApiKey")
-    ) {
-      log?.appendLine("[GitCommitMessageGenerator] 配置已变更，作废旧实例");
+    if (e.affectsConfiguration("git-commit-message-generator.provider")) {
+      log?.appendLine("[GitCommitMessageGenerator] provider 配置已变更，作废旧实例");
       invalidateGenerator();
     }
   });
