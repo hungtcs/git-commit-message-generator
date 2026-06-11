@@ -10,7 +10,7 @@ test("generate commit message", async () => {
     apiKey: process.env.DEEPSEEK_API_KEY,
   });
   const model = deepSeek.model("deepseek-v4-flash");
-  const generator = new GitCommitMessageGenerator(provider, model);
+  const generator = new GitCommitMessageGenerator(process.cwd(), provider, model);
 
   const result = await generator.generateCommitMessage();
   console.log(result);

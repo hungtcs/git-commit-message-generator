@@ -4,18 +4,20 @@
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
 	"version": "0.2.0",
-	"configurations": [{
+	"configurations": [
+		{
 			"name": "Run Extension",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
+				"--extensionDevelopmentPath=${workspaceFolder}/vscode-extension",
+				"/Users/hungtcs/Workspaces/@github/ant-design-icons",
+				"/Users/hungtcs/Workspaces/@github/Deep-Live-Cam"
 			],
 			"outFiles": [
-				"${workspaceFolder}/dist/**/*.js"
-			],
-			"preLaunchTask": "pnpm: watch"
+				"${workspaceFolder}/vscode-extension/dist/**/*.js"
+			]
 		}
 	]
 }

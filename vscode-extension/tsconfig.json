@@ -2,7 +2,7 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./lib",
+    "rootDir": "./src",
     "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -37,8 +37,10 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
+  "include": [
+    "src/",
+  ],
   "exclude": [
-    "vscode-extension/",
     "dist/",
     "**/*.test.ts"
   ]

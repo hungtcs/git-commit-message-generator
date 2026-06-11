@@ -1,0 +1,91 @@
+{
+  "name": "@cicara/vscode-git-commit-message-generator",
+  "displayName": "Git Commit Message Generator",
+  "version": "0.0.0",
+  "description": "generate git commit message",
+  "type": "module",
+  "main": "./dist/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "keywords": [],
+  "author": "hungtcs <hungtcs@outlook.com> (https://github.com/hungtcs)",
+  "license": "MIT",
+  "dependencies": {
+    "@cicara/git-commit-message-generator": "workspace:^",
+    "@genkit-ai/compat-oai": "^1.36.0",
+    "genkit": "^1.36.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.20",
+    "@types/vscode": "^1.120.0",
+    "typescript": "^6.0.3"
+  },
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Git Commit Message Generator",
+      "properties": {
+        "gitCommitMessageGenerator.provider": {
+          "type": "string",
+          "default": "deepseek",
+          "enum": [
+            "deepseek"
+          ],
+          "enumDescriptions": [
+            "DeepSeek V4 系列模型"
+          ],
+          "description": "AI 服务提供商"
+        },
+        "gitCommitMessageGenerator.deepseekApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "DeepSeek API Key"
+        },
+        "gitCommitMessageGenerator.customInstructions": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "生成提交信息时使用的自定义用户 prompt。配置后会替换默认用户 prompt。"
+        },
+        "gitCommitMessageGenerator.customInstructionsFile": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "生成提交信息时读取的自定义用户 prompt 文件路径。支持绝对路径，或相对于当前 Git 仓库根目录的路径。"
+        }
+      }
+    },
+    "outputChannels": [
+      {
+        "id": "gitCommitMessageGenerator",
+        "label": "Git Commit Message Generator",
+        "languageId": "log"
+      }
+    ],
+    "commands": [
+      {
+        "command": "gitCommitMessageGenerator.generate",
+        "title": "生成提交信息",
+        "icon": "$(sparkle)"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "gitCommitMessageGenerator.generate",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ]
+    }
+  }
+}
