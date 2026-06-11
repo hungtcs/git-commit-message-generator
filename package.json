@@ -1,0 +1,32 @@
+{
+  "name": "@cicara/git-commit-message-generator",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "generate git commit message",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": {
+    "email": "hungtcs@outlook.com",
+    "name": "hungtcs",
+    "url": "https://github.com/hungtcs"
+  },
+  "license": "MIT",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.5.3",
+      "onFail": "download"
+    }
+  },
+  "dependencies": {
+    "@genkit-ai/compat-oai": "^1.36.0",
+    "genkit": "^1.36.0",
+    "simple-git": "^3.36.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.20",
+    "typescript": "^6.0.3"
+  }
+}
