@@ -2,6 +2,9 @@
   "name": "git-commit-message-generator",
   "type": "module",
   "version": "0.0.0",
+  "scripts": {
+    "build": "npm run build --workspaces --if-present"
+  },
   "author": {
     "email": "hungtcs@outlook.com",
     "name": "hungtcs",

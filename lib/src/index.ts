@@ -20,6 +20,7 @@ export class GitCommitMessageGenerator {
   public gitStagedDiffTool: ToolAction;
   public gitStagedFilesStatTool: ToolAction;
   private logger: Logger | undefined;
+  private git: Git;
 
   constructor(
     baseDir: string,
@@ -27,18 +28,17 @@ export class GitCommitMessageGenerator {
     model: ModelArgument<any>,
     options?: { logger?: Logger },
   ) {
-    this.logger = options?.logger;
     this.log(`初始化生成器，baseDir=${baseDir}`);
 
-    const git = new Git(baseDir, this.logger);
-
+    this.logger = options?.logger;
+    this.git = new Git(baseDir, this.logger);
     this.ai = genkit({
       plugins: [provider],
       model: model,
     });
-    this.gitStagedFilesTool = git.getGitStagedFilesTool(this.ai);
-    this.gitStagedFilesStatTool = git.getGitStagedFilesStatTool(this.ai);
-    this.gitStagedDiffTool = git.getGitStagedFilesDiffTool(this.ai);
+    this.gitStagedFilesTool = this.git.getGitStagedFilesTool(this.ai);
+    this.gitStagedFilesStatTool = this.git.getGitStagedFilesStatTool(this.ai);
+    this.gitStagedDiffTool = this.git.getGitStagedFilesDiffTool(this.ai);
   }
 
   private log(message: string): void {
@@ -48,6 +48,18 @@ export class GitCommitMessageGenerator {
   public async generateCommitMessage(prompt?: string) {
     const startedAt = Date.now();
     this.log(`开始生成提交信息，promptLength=${prompt?.length ?? 0}`);
+
+    // 检查暂存区是否有文件，如果没有则直接返回，避免无效的 AI 调用
+    const status = await this.git.status();
+    this.log(`暂存区状态：staged=${status.staged.length}，deleted=${status.deleted.length}`);
+    if (status.staged.length === 0) {
+      this.log(`暂存区无文件，跳过 AI 调用，耗时 ${Date.now() - startedAt}ms`);
+      return {
+        message: "",
+        summary: "暂存区无文件，无法生成提交信息",
+      };
+    }
+
     try {
       const response = await this.ai.generate({
         prompt: prompt || "请生成 Git 提交信息",

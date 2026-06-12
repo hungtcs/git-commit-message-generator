@@ -4,7 +4,7 @@ import { simpleGit, type SimpleGit } from "simple-git";
 export type Logger = (message: string) => void;
 
 export class Git {
-  public git: SimpleGit;
+  private git: SimpleGit;
   private logger: Logger | undefined;
 
   constructor(baseDir?: string, logger?: Logger) {
@@ -14,6 +14,10 @@ export class Git {
 
   private log(message: string): void {
     this.logger?.(`[Git] ${message}`);
+  }
+
+  public status() {
+    return this.git.status();
   }
 
   public getGitStagedFilesTool(ai: Genkit) {
