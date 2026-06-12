@@ -6,5 +6,7 @@
   "[markdown]": {
     "editor.wordWrap": "off",
   },
-  "git-commit-message-generator.customInstructionsFile": ".vscode/commit-message-instructions.md"
+  "git-commit-message-generator.customInstructionsFile": ".vscode/commit-message-instructions.md",
+  "git-commit-message-generator.provider": "deepseek",
+  "git-commit-message-generator.model": "deepseek-v4-flash"
 }

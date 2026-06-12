@@ -1,6 +1,6 @@
 {
   "name": "cicara-vscode-git-commit-message-generator",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "AI-powered Git commit message generator using DeepSeek — analyze staged changes and generate meaningful commit messages with one click",
   "icon": "icon.png",
   "keywords": [
@@ -26,15 +26,18 @@
   "main": "./dist/extension.cjs",
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "tsdown",
+    "type-check": "tsc --noEmit",
+    "build": "npm run type-check && tsdown",
     "watch": "tsc -watch -p ./",
     "test": "vscode-test",
     "pack": "vsce package --no-dependencies"
   },
   "dependencies": {
     "@cicara/git-commit-message-generator": "^0.0.0",
+    "@genkit-ai/anthropic": "^0.3.0",
     "@genkit-ai/compat-oai": "^1.36.0",
-    "genkit": "^1.36.0"
+    "genkit": "^1.36.0",
+    "genkitx-ollama": "^1.37.0"
   },
   "devDependencies": {
     "@types/node": "^22.19.20",
@@ -63,10 +66,16 @@
           "type": "string",
           "default": "deepseek",
           "enum": [
-            "deepseek"
+            "deepseek",
+            "openai-compatible",
+            "ollama",
+            "anthropic"
           ],
           "enumDescriptions": [
-            "DeepSeek V4 系列模型"
+            "DeepSeek V4 系列模型",
+            "OpenAI 兼容接口（支持任意 OpenAI-compatible 服务）",
+            "Ollama 本地模型服务",
+            "Anthropic Claude 系列模型"
           ],
           "description": "AI 服务提供商"
         },
@@ -79,6 +88,16 @@
           "type": "string",
           "default": "",
           "markdownDescription": "生成提交信息时读取的自定义用户 prompt 文件路径。支持绝对路径，或相对于当前 Git 仓库根目录的路径。"
+        },
+        "git-commit-message-generator.model": {
+          "type": "string",
+          "default": "deepseek-v4-flash",
+          "description": "模型名称。DeepSeek 模式下可选 deepseek-v4-flash / deepseek-v4；openai-compatible 模式下填入目标模型名"
+        },
+        "git-commit-message-generator.baseURL": {
+          "type": "string",
+          "default": "",
+          "description": "API 基础地址。openai-compatible 模式下为 OpenAI 兼容端点地址；ollama 模式下为 Ollama 服务地址，留空默认 http://127.0.0.1:11434"
         }
       }
     },

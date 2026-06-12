@@ -1,3 +1,4 @@
+import { retry } from "@genkit-ai/middleware";
 import { Genkit, genkit, type ModelArgument, type ToolAction, z } from "genkit";
 import { type GenkitPlugin, type GenkitPluginV2 } from "genkit/plugin";
 import { Git, type Logger } from "./git.ts";
@@ -59,7 +60,14 @@ export class GitCommitMessageGenerator {
           this.gitStagedFilesStatTool,
           this.gitStagedDiffTool,
         ],
-        use: [loggerMiddleware({ verbose: true })],
+        use: [
+          retry({
+            maxRetries: 3,
+            initialDelayMs: 1000,
+            backoffFactor: 2,
+          }),
+          loggerMiddleware({ verbose: true }),
+        ],
       });
       this.log(`生成完成，耗时 ${Date.now() - startedAt}ms，message=${response.output?.message ?? "(null)"}`);
       return response.output;
