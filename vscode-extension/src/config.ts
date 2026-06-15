@@ -1,5 +1,5 @@
-import * as vscode from "vscode";
 import path from "node:path";
+import * as vscode from "vscode";
 import { log } from "./logger.ts";
 
 const CONFIG_SECTION = "git-commit-message-generator";
@@ -36,9 +36,7 @@ export async function loadCustomPrompt(repoRoot: string): Promise<string> {
 
   const filePath = config.get<string>("customInstructionsFile", "").trim();
   if (filePath) {
-    const absolutePath = path.isAbsolute(filePath)
-      ? filePath
-      : path.resolve(repoRoot, filePath);
+    const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(repoRoot, filePath);
     log(`正在读取自定义 prompt 文件：${absolutePath}`);
     const raw = await vscode.workspace.fs.readFile(vscode.Uri.file(absolutePath));
     const content = new TextDecoder().decode(raw).trim();

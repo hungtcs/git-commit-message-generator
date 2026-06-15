@@ -50,4 +50,3 @@ export async function getGitRepository(sourceControl?: unknown): Promise<Reposit
 export function getRepoRoot(repository: Repository | null): string | null {
   return repository?.rootUri.fsPath ?? null;
 }
-
