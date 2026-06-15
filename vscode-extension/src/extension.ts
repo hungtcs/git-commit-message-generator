@@ -21,10 +21,14 @@ export function activate(context: vscode.ExtensionContext) {
     ),
   );
 
+  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+  context.subscriptions.push(statusBarItem);
+
+
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "git-commit-message-generator.generate",
-      createGenerateCommand(context.secrets),
+      createGenerateCommand(context.secrets, statusBarItem),
     ),
   );
 }

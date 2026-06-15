@@ -23,8 +23,19 @@ export function createSetApiKeyCommand(secrets: vscode.SecretStorage): () => Pro
   };
 }
 
-export function createGenerateCommand(secrets: vscode.SecretStorage): (sourceControl?: unknown) => Promise<void> {
+export function createGenerateCommand(secrets: vscode.SecretStorage, statusBarItem: vscode.StatusBarItem): (sourceControl?: unknown) => Promise<void> {
+  let isGenerating = false;
+
   return async (sourceControl) => {
+    if (isGenerating) {
+      log("跳过：生成流程已在执行中");
+      return;
+    }
+    isGenerating = true;
+    statusBarItem.text = "$(loading~spin) 生成提交信息...";
+    statusBarItem.show();
+
+    try {
     const startedAt = Date.now();
     const provider = getProvider();
     const modelName = getModel(provider);
@@ -115,6 +126,11 @@ export function createGenerateCommand(secrets: vscode.SecretStorage): (sourceCon
       log(`生成流程失败，总耗时 ${Date.now() - startedAt}ms`);
       log(formatError(error));
       vscode.window.showErrorMessage(`生成提交信息失败：${error instanceof Error ? error.message : String(error)}`);
+
+    }
+    } finally {
+      isGenerating = false;
+      statusBarItem.hide();
     }
   };
 }
