@@ -116,8 +116,8 @@ export function createGenerateCommand(
             repo.inputBox.value = result.message;
             log("SCM 输入框写入完成");
           }
-          vscode.window.showInformationMessage(result.summary);
-          log(`完成：${result.summary}`);
+          vscode.window.showInformationMessage(result.summary ?? "提交信息已生成");
+          log(`完成：${result.summary ?? "(无说明)"}`);
         } else {
           log("AI 返回空结果，未写入 SCM 输入框");
           vscode.window.showWarningMessage("未生成提交信息，请查看输出通道日志");

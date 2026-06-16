@@ -1,6 +1,6 @@
 {
   "name": "cicara-vscode-git-commit-message-generator",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "AI-powered Git commit message generator — analyze staged changes and generate meaningful commit messages with one click. Supports DeepSeek, OpenAI-compatible, Ollama, and Anthropic.",
   "icon": "icon.png",
   "keywords": [

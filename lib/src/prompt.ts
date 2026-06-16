@@ -27,4 +27,8 @@ export const SYSTEM_PROMPT = `你是一个 Git 提交消息生成器。
 
 4. **第四步：生成提交信息**
    基于已获取的信息（包括 diff 详情和 \`deleted\` 列表），按照以下规范生成提交信息：
+
+## 输出格式
+你必须输出 JSON 对象，包含 "message" 字段和可选的 "summary" 字段。
+
 `;

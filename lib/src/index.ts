@@ -10,7 +10,8 @@ const CommitMessageSchema = z
     message: z.string().describe("the git commit message"),
     summary: z
       .string()
-      .describe("a brief explanation shown to the user, describing why this commit message was chosen"),
+      .describe("a brief explanation shown to the user, describing why this commit message was chosen")
+      .optional(),
   })
   .nullable();
 
@@ -81,8 +82,9 @@ export class GitCommitMessageGenerator {
           loggerMiddleware({ verbose: true }),
         ],
       });
-      this.log(`生成完成，耗时 ${Date.now() - startedAt}ms，message=${response.output?.message ?? "(null)"}`);
-      return response.output;
+      const output = response.output;
+      this.log(`生成完成，耗时 ${Date.now() - startedAt}ms，message=${output?.message ?? "(null)"}`);
+      return output;
     } catch (error) {
       this.log(
         `生成失败，耗时 ${Date.now() - startedAt}ms，error=${error instanceof Error ? error.stack : String(error)}`,
