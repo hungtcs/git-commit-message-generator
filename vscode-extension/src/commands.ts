@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { getApiKey, getModel, getProvider, loadCustomPrompt, storeApiKey } from "./config.ts";
 import { getGenerator } from "./generator-manager.ts";
 import { getGitRepository, getRepoRoot, getSourceControlRootUri } from "./git-api.ts";
-import { log } from "./logger.ts";
+import { log, show } from "./logger.ts";
 
 function formatError(error: unknown): string {
   return error instanceof Error ? (error.stack ?? error.message) : String(error);
@@ -77,7 +77,9 @@ export function createGenerateCommand(
       const repoRoot = getRepoRoot(repo);
       if (!repoRoot) {
         log("终止：未找到 Git 仓库");
-        vscode.window.showErrorMessage("未找到 Git 仓库");
+        vscode.window.showErrorMessage("未找到 Git 仓库", "打开日志").then((choice) => {
+          if (choice === "打开日志") show();
+        });
         return;
       }
       log(`Git 仓库解析完成，repoRoot=${repoRoot}`);
@@ -88,9 +90,14 @@ export function createGenerateCommand(
         customPrompt = await loadCustomPrompt(repoRoot);
       } catch (error) {
         log(`加载自定义 prompt 失败：${formatError(error)}`);
-        vscode.window.showErrorMessage(
-          `加载自定义 prompt 失败：${error instanceof Error ? error.message : String(error)}`,
-        );
+        vscode.window
+          .showErrorMessage(
+            `加载自定义 prompt 失败：${error instanceof Error ? error.message : String(error)}`,
+            "打开日志",
+          )
+          .then((choice) => {
+            if (choice === "打开日志") show();
+          });
         return;
       }
       log(`自定义 prompt 加载完成，长度=${customPrompt.length}`);
@@ -120,12 +127,18 @@ export function createGenerateCommand(
           log(`完成：${result.summary ?? "(无说明)"}`);
         } else {
           log("AI 返回空结果，未写入 SCM 输入框");
-          vscode.window.showWarningMessage("未生成提交信息，请查看输出通道日志");
+          vscode.window.showWarningMessage("未生成提交信息，请查看输出通道日志", "打开日志").then((choice) => {
+            if (choice === "打开日志") show();
+          });
         }
       } catch (error) {
         log(`生成流程失败，总耗时 ${Date.now() - startedAt}ms`);
         log(formatError(error));
-        vscode.window.showErrorMessage(`生成提交信息失败：${error instanceof Error ? error.message : String(error)}`);
+        vscode.window
+          .showErrorMessage(`生成提交信息失败：${error instanceof Error ? error.message : String(error)}`, "打开日志")
+          .then((choice) => {
+            if (choice === "打开日志") show();
+          });
       }
     } finally {
       isGenerating = false;

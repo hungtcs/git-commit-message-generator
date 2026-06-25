@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { createGenerateCommand, createSetApiKeyCommand } from "./commands.ts";
 import { watchProviderChanges } from "./generator-manager.ts";
-import { initLogger, log } from "./logger.ts";
+import { initLogger, log, show } from "./logger.ts";
 
 export function activate(context: vscode.ExtensionContext) {
   const channel = vscode.window.createOutputChannel("Git Commit Message Generator");
@@ -17,7 +17,14 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+  statusBarItem.command = "git-commit-message-generator.showLogs";
   context.subscriptions.push(statusBarItem);
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("git-commit-message-generator.showLogs", () => {
+      show();
+    }),
+  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
